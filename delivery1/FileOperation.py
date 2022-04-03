@@ -4,7 +4,7 @@ import re
 import Frequency
 import pandas as pd
 import StopWord
-
+from nltk.corpus import stopwords
 stopWords = list(StopWord.STOP_WORDS)
 
 
@@ -21,10 +21,12 @@ def readAndTokenizeFile(filename):
     pattern = "\'(.*?) "
     redundantText = re.findall(pattern, text)  # '___ <bosluk> arasındaki 'in 'ın 'nun gibi ekleri bulur
 
+    stoplist = stopwords.words('turkish')  # Bring in the default Turkish NLTK stop words 
+
     words = re.split(r'\W+', text)  # noktalama işaretlerine göre ayırır
     cleanText = ' '.join((item for item in words if not item.isdigit()))  # sayıları çıkarır
-    tokens = [token.lower() for token in cleanText.split(" ") if
-              (token != "" and len(token) > 1)]  # uzunluğu 1den fazla olanları alır
+    tokens = [token for token in cleanText.split(" ") if
+              (token != "" and len(token) > 1 and token not in stoplist)]  # uzunluğu 1den fazla olanları alır
 
     for i in tokens:
         for t in redundantText:
@@ -37,7 +39,8 @@ def readAndTokenizeFile(filename):
 def readAllFilesInRepo():
     listOfTheFiles = list()
     #dosyaların olduğu path'i koyun
-    path = "C:/Users/senayangoz/Desktop/NLP/deneme"
+    #path = "C:/Users/senayangoz/Desktop/NLP/deneme"
+    path = "C:/Users/mikailtorun/Desktop/Odevler/NLP/2021-01"
     for files in os.walk(path, topdown=False):
         for file in files[2]:
             listOfTheFiles.append(f"{path}/{file}")
@@ -52,7 +55,7 @@ def getCorpus():
         freq1 = Frequency.frequency(1, tokens)
         freq = dict()
         for i in freq1.keys():
-            freq[i[0].lower()] = freq1[i]
+            freq[i[0]] = freq1[i]
         setOfCorpus = set(corpus)
         for ngram in setOfCorpus.intersection(set(freq)):
             corpus[ngram] += freq[ngram]
@@ -72,7 +75,7 @@ def getNgrams(ngram):
         for i in freq1.keys():
             tempList = list()
             for m in i:
-                tempList.append(m.lower())
+                tempList.append(m)
             str = ' '.join(tempList)
             freq[str] = freq1[i]
         setOfCorpus = set(corpus)
