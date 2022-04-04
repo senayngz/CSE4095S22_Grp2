@@ -3,17 +3,18 @@ import operator
 
 
 def mutual_information_probability(n_gram):
-    total = len(tokens)
-    one_word_frequency = frequency(1, tokens)
-    two_word_frequency = frequency(n_gram, tokens)
+    corpus = ReadCSV("corpus.json")
+    mutual_info_dict = dict()
+    total = 0
+    for i in corpus.keys():
+        total += corpus[i]
 
-    for i in two_word_frequency.keys():
-        freq_b = two_word_frequency[i] / total
-        bottom_part = 1
-        for j in i:
-            c = (j,)
-            bottom_part *= one_word_frequency[c] / total
+    for i in frequencyDict.keys():
+        ngramFreq = frequencyDict[i] / total
+        value = 1
+        for word in i.split():
+            value *= corpus[word] / total
 
-        mutual_info_dict[i] = math.log2(freq_b / bottom_part)
+        mutual_info_dict[i] = math.log2(ngramFreq / value)
 
-    print(dict(sorted(mutual_info_dict.items(), key=operator.itemgetter(1), reverse=True)))
+    return dict(sorted(mutual_info_dict.items(), key=operator.itemgetter(1), reverse=True))
