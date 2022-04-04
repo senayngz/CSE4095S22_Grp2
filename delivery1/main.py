@@ -1,14 +1,17 @@
+from zemberek import TurkishMorphology
+
 import FileOperation
 from Frequency import partOfSpeechFilter
 from tTest import tTest
 
 if __name__ == '__main__':
-    
-   #FREQUENCY
-    bigrams_collocations_frequency = partOfSpeechFilter(FileOperation.ReadCSV("bigrams.json"), 2)
+    morphology = TurkishMorphology.create_with_defaults()
+
+    #FREQUENCY
+    bigrams_collocations_frequency = partOfSpeechFilter(FileOperation.ReadCSV("bigrams.json"), 2, morphology)
     FileOperation.writeToCSV(bigrams_collocations_frequency, "bigrams_collocations_frequency")
 
-    trigrams_collocations_frequency = partOfSpeechFilter(FileOperation.ReadCSV("trigrams.json"), 3)
+    trigrams_collocations_frequency = partOfSpeechFilter(FileOperation.ReadCSV("trigrams.json"), 3, morphology)
     FileOperation.writeToCSV(trigrams_collocations_frequency, "trigrams_collocations_frequency")
 
     #TTEST
