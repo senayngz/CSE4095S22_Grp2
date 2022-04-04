@@ -1,7 +1,6 @@
 import operator
 
 from nltk import ngrams
-from zemberek import TurkishMorphology
 
 
 def frequency(ngram, tokens):
@@ -13,11 +12,10 @@ def frequency(ngram, tokens):
     return dict(sorted(freq.items(), key=operator.itemgetter(1), reverse=True))
 
 
-def partOfSpeechFilter(frequencyDict, ngrams):
+def partOfSpeechFilter(frequencyDict, ngrams, morphology):
     posDict = dict()
     filteringTagsTrigrams = ["NNN", "NNV", "NAN", "VNN", "NVN", "NNA", "ANN", "ANV"]
     filteringTagsBigrams = ["NN", "AN", "NA", "NV"]
-    morphology = TurkishMorphology.create_with_defaults()
     tags = str()
     for ngram in frequencyDict.keys():
         for token in ngram.split():
