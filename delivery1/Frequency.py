@@ -37,5 +37,5 @@ def partOfSpeechFilter(frequencyDict, ngrams):
                 if tags in filteringTagsBigrams:
                     posDict[ngram] = [frequencyDict[ngram], tags]
         tags = ""
-    return posDict
+    return dict(sorted(posDict.items(), key=operator.itemgetter(1), reverse=True))
 
