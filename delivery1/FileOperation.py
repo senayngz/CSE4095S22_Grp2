@@ -3,13 +3,17 @@ import os
 import re
 import Frequency
 import pandas as pd
-from nltk.corpus import stopwords
+
+from StopWord import STOP_WORDS
+
+stopWordsList = list(STOP_WORDS)
+
 
 def readAndTokenizeFile(filename):
     with open(filename, encoding='utf-8') as fh:
         data = json.load(fh)
 
-    itemsList = [key + " " + value for key, value in data.items() if data[key] != "" and not data[key].isnumeric()]
+    itemsList = [value for key, value in data.items() if key == "ictihat"]
     text = " ".join(itemsList)
 
     for apostrophe in ["’", "՚", "＇"]:  # turns different kind of apostrophes into one kind
@@ -18,12 +22,10 @@ def readAndTokenizeFile(filename):
     pattern = "\'(.*?) "
     redundantText = re.findall(pattern, text)  # '___ <bosluk> arasındaki 'in 'ın 'nun gibi ekleri bulur
 
-    stoplist = stopwords.words('turkish')  # Bring in the default Turkish NLTK stop words
-
     words = re.split(r'\W+', text)  # noktalama işaretlerine göre ayırır
     cleanText = ' '.join((item for item in words if not item.isdigit()))  # sayıları çıkarır
     tokens = [token for token in cleanText.split(" ") if
-              (token != "" and len(token) > 1 and token not in stoplist)]  # uzunluğu 1den fazla olanları alır
+              (token != "" and len(token) > 1)]  # uzunluğu 1den fazla olanları alır
 
     for i in tokens:
         for t in redundantText:
@@ -35,9 +37,9 @@ def readAndTokenizeFile(filename):
 
 def readAllFilesInRepo():
     listOfTheFiles = list()
-    #dosyaların olduğu path'i koyun
-    #path = "C:/Users/senayangoz/Desktop/NLP/deneme"
-    path = "C:/Users/mikailtorun/Desktop/Odevler/NLP/2021-01"
+    # dosyaların olduğu path'i koyun
+    # path = "C:/Users/senayangoz/Desktop/NLP/deneme"
+    path = "C:/Users/senayangoz/Desktop/NLP/deneme"
     for files in os.walk(path, topdown=False):
         for file in files[2]:
             listOfTheFiles.append(f"{path}/{file}")
@@ -52,7 +54,9 @@ def getCorpus():
         freq1 = Frequency.frequency(1, tokens)
         freq = dict()
         for i in freq1.keys():
-            freq[i[0]] = freq1[i]
+            key = i[0]
+            key = key.lower()
+            freq[key] = freq1[i]
         setOfCorpus = set(corpus)
         for ngram in setOfCorpus.intersection(set(freq)):
             corpus[ngram] += freq[ngram]
@@ -70,11 +74,18 @@ def getNgrams(ngram):
         freq1 = Frequency.frequency(ngram, tokens)
         freq = dict()
         for i in freq1.keys():
+            outerBreak = False
             tempList = list()
             for m in i:
+                if m in stopWordsList:
+                    outerBreak = True
+                    break
                 tempList.append(m)
-            str = ' '.join(tempList)
-            freq[str] = freq1[i]
+            if outerBreak:
+                continue
+            strm = ' '.join(tempList)
+            strm = strm.lower()
+            freq[strm] = freq1[i]
         setOfCorpus = set(corpus)
         for i in setOfCorpus.intersection(set(freq)):
             corpus[i] += freq[i]
@@ -100,15 +111,22 @@ def ReadCSV(filename):
     return convertedDict
 
 
+def ReadCSVAndCleanStopWords(filename):
+    df = pd.read_csv(filename)
+    dfDict = df.to_dict('split')
+    strList = dfDict["columns"]
+    jsonStr = ','.join(strList)
+    convertedDict = json.loads(jsonStr)
 
-#cleanData = ReadCSV("trigrams.json")
+    return convertedDict
+
 
 """
 corpus = getCorpus()
-writeToCSV(corpus, "corpus")
+writeToCSV(corpus, "deneme")
 
 bigrams = getNgrams(2)
-writeToCSV(bigrams, "bigrams")
+writeToCSV(bigrams, "deneme")
 
 trigram = getNgrams(3)
 writeToCSV(trigram, "trigrams")
