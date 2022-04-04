@@ -3,16 +3,13 @@ import os
 import re
 import Frequency
 import pandas as pd
-import StopWord
 from nltk.corpus import stopwords
-stopWords = list(StopWord.STOP_WORDS)
-
 
 def readAndTokenizeFile(filename):
     with open(filename, encoding='utf-8') as fh:
         data = json.load(fh)
 
-    itemsList = [key + " " + value for key, value in data.items()]
+    itemsList = [key + " " + value for key, value in data.items() if data[key] != "" and not data[key].isnumeric()]
     text = " ".join(itemsList)
 
     for apostrophe in ["’", "՚", "＇"]:  # turns different kind of apostrophes into one kind
@@ -21,7 +18,7 @@ def readAndTokenizeFile(filename):
     pattern = "\'(.*?) "
     redundantText = re.findall(pattern, text)  # '___ <bosluk> arasındaki 'in 'ın 'nun gibi ekleri bulur
 
-    stoplist = stopwords.words('turkish')  # Bring in the default Turkish NLTK stop words 
+    stoplist = stopwords.words('turkish')  # Bring in the default Turkish NLTK stop words
 
     words = re.split(r'\W+', text)  # noktalama işaretlerine göre ayırır
     cleanText = ' '.join((item for item in words if not item.isdigit()))  # sayıları çıkarır
@@ -102,19 +99,7 @@ def ReadCSV(filename):
     convertedDict = json.loads(jsonStr)
     return convertedDict
 
-def cleanStopWords(ngrams):
-    """
-        hocaya sor
-         keysToRemove = list()
-         for key in convertedDict.keys():
-            for token in key.split():
-                if token in stopWords:
-                    if key not in keysToRemove:
-                        keysToRemove.append(key)
-        for i in keysToRemove:
-            del convertedDict[i]
-        print (keysToRemove)
-        """
+
 
 #cleanData = ReadCSV("trigrams.json")
 
