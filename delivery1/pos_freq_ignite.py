@@ -1,4 +1,4 @@
 import main
 
-main.freq_test()
-print("freq test is done")
+main.freq_with_t_test()
+print("freq_with_t_test  is done")
