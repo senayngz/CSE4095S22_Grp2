@@ -39,7 +39,7 @@ def readAllFilesInRepo():
     listOfTheFiles = list()
     # dosyaların olduğu path'i koyun
     # path = "C:/Users/senayangoz/Desktop/NLP/deneme"
-    path = "C:/Users/senayangoz/Desktop/NLP/deneme"
+    path = "jsons/"
     for files in os.walk(path, topdown=False):
         for file in files[2]:
             listOfTheFiles.append(f"{path}/{file}")
@@ -121,13 +121,15 @@ def ReadCSVAndCleanStopWords(filename):
     return convertedDict
 
 
+
+
 """
 corpus = getCorpus()
-writeToCSV(corpus, "deneme")
+writeToCSV(corpus, "n-grams/corpus")
 
 bigrams = getNgrams(2)
-writeToCSV(bigrams, "deneme")
+writeToCSV(bigrams, "n-grams/bigram")
 
 trigram = getNgrams(3)
-writeToCSV(trigram, "trigrams")
+writeToCSV(trigram, "n-grams/trigram")
 """

@@ -5,8 +5,8 @@ from FileOperation import ReadCSV
 
 
 def tTest(frequencyDict):
-    criticalValue = 2.576
-    corpus = ReadCSV("corpus.json")
+    criticalValue = 2.576   # value corresponding to a=0.1%
+    corpus = ReadCSV("n-grams/corpus.json")
     total = 0
     for i in corpus.keys():
         total += corpus[i]
