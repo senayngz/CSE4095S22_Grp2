@@ -77,7 +77,7 @@ def getNgrams(ngram):
             outerBreak = False
             tempList = list()
             for m in i:
-                if m in stopWordsList:
+                if m.lower() in stopWordsList:
                     outerBreak = True
                     break
                 tempList.append(m)
