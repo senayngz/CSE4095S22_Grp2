@@ -8,9 +8,9 @@ def tTest(frequencyDict):
     criticalValue = 2.576   # value corresponding to a=0.1%
     corpus = ReadCSV("n-grams/corpus.json")
     total = 0
-    for i in corpus.keys():
-        total += corpus[i]
-    tTestCollocations = dict()
+    for i in corpus.values():
+        total += i
+    tTestCollocations = {}
 
     for i in frequencyDict.keys():
         value = frequencyDict[i]
@@ -23,7 +23,7 @@ def tTest(frequencyDict):
         except:
             t = 0
         if t > criticalValue:
-            tTestCollocations[i] = [[frequencyDict[i], t] for i in frequencyDict.keys()]
+            tTestCollocations[i] = [frequencyDict[i], t]
 
     return dict(sorted(tTestCollocations.items(), key=operator.itemgetter(1), reverse=True))
 

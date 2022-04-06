@@ -1,5 +1,6 @@
 # from distutils.command.build import build
 import json
+import FileOperation
 from lib2to3.pgen2 import token
 from os import remove
 import re
@@ -38,7 +39,9 @@ def readAndTokenizeFile(filename):
     for i in tokens:
         for t in redundantText:
             if i == t:
-                tokens.remove(i)
+                if(i in tokens):
+                    tokens.remove(i)
+
     return tokens
 
 
@@ -78,23 +81,51 @@ def meanAndVariance(tokens, offset):
 
 
 
+filePost = ".json"
+filePre = "../2021-01/"
+tokens = readAndTokenizeFile(filePre + "1" + filePost);
+for i in range(2, 27843):
+  #  tokens += readAndTokenizeFile(filePre + (i.__str__()) + filePost );
+    tokens = (readAndTokenizeFile( filePre + i.__str__() + filePost) + tokens)  ;
 
-tokens = readAndTokenizeFile("4.json")
+#i = 1
+#tokens = readAndTokenizeFile(filePre + (i.__str__()) + filePost )
 analysisResult = meanAndVariance(tokens, 4)
 
+fileWriteResults : dict = defaultdict();
 for pair in analysisResult.items():
     data : DatasetMetaData = pair[1]
-    print("----")
-    print("Token Pair = " + (pair[0]).__str__())
-    print("Count = " + (data.count).__str__())
-    print("Sum = " + (data.sumVal).__str__())
-    print("Mean = " + (data.mean).__str__())
-    print("Variance (s^2) = " + (data.variance).__str__())
-    print("STDev (s) = " + (data.standardDeviation ).__str__())
-    strVal = ""
-    for var in data.valueList:
-        strVal = strVal + (var).__str__() + " , "
-    print("Values --> " + strVal)
+    # print("----")
+    fileWriteResults[(pair[0]).__str__()] = data.variance
+    # print("Token Pair = " + (pair[0]).__str__())
+    # print("Count = " + (data.count).__str__())
+    # print("Sum = " + (data.sumVal).__str__())
+    # print("Mean = " + (data.mean).__str__())
+    # print("Variance (s^2) = " + (data.variance).__str__())
+    # print("STDev (s) = " + (data.standardDeviation ).__str__())
+    # strVal = ""
+    # for var in data.valueList:
+    #     strVal = strVal + (var).__str__() + " , "
+    # print("Values --> " + strVal)
+
+
+FileOperation.writeToCSV(fileWriteResults, "test")
+
+# for pair in analysisResult.items():
+#     data : DatasetMetaData = pair[1]
+#     print("----")
+#     print("Token Pair = " + (pair[0]).__str__())
+#     print("Count = " + (data.count).__str__())
+#     print("Sum = " + (data.sumVal).__str__())
+#     print("Mean = " + (data.mean).__str__())
+#     print("Variance (s^2) = " + (data.variance).__str__())
+#     print("STDev (s) = " + (data.standardDeviation ).__str__())
+#     strVal = ""
+#     for var in data.valueList:
+#         strVal = strVal + (var).__str__() + " , "
+#     print("Values --> " + strVal)
+
+
 
 
 
