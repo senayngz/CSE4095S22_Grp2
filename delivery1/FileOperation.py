@@ -3,11 +3,16 @@ import os
 import re
 import Frequency
 import pandas as pd
+from string import digits
 
 from StopWord import STOP_WORDS
 
 stopWordsList = list(STOP_WORDS)
 
+def remove_digit_in_string(list):
+    remove_digits = str.maketrans('', '', digits)
+    list = [i.translate(remove_digits) for i in list]
+    return list
 
 def readAndTokenizeFile(filename):
     with open(filename, encoding='utf-8') as fh:
@@ -32,7 +37,7 @@ def readAndTokenizeFile(filename):
             if i == t:
                 tokens.remove(i)
                 break
-    return tokens
+    return remove_digit_in_string(tokens)
 
 
 def readAllFilesInRepo():
